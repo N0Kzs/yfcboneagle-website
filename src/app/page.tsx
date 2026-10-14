@@ -39,7 +39,7 @@ export default function Page() {
       <CompanyProfileSection />
 
       {/* 8. Regional Hubs & Factory Locations (MapLibre Interactive Map) */}
-      <section id="locations" className="px-6 py-24 sm:px-10 md:py-32 bg-background border-b border-border/40">
+      <section id="locations" className="px-6 py-24 sm:px-10 lg:px-16 md:py-32 bg-background border-b border-border/40">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 max-w-2xl">
             <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">
@@ -59,7 +59,7 @@ export default function Page() {
       </section>
 
       {/* Footer */}
-      <footer id="contact" className="bg-foreground px-6 py-16 text-background sm:px-10 md:py-20">
+      <footer id="contact" className="bg-foreground px-6 py-16 text-background sm:px-10 lg:px-16 md:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
             <div>

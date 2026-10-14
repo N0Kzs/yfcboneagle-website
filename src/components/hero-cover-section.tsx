@@ -116,12 +116,18 @@ export function HeroCoverSection() {
             aria-hidden="true"
           />
 
+          {/* 
+            MANUAL LEFT ADJUSTMENT:
+            To move the text further LEFT, increase the negative value below 
+            (e.g., lg:-left-28 xl:-left-36 or arbitrary pixels like lg:-left-[100px] xl:-left-[140px]).
+            To move it back to the RIGHT, decrease the negative value (e.g. lg:-left-12 or remove to center).
+          */}
           <motion.div
             style={{
               scale: heroScale,
               y: heroY,
             }}
-            className="mx-auto max-w-7xl w-full"
+            className="mx-auto max-w-7xl w-full relative left-0 lg:-left-20 xl:-left-28"
           >
             <div className="max-w-5xl">
               <h1 className="text-5xl font-black tracking-[-0.04em] sm:text-7xl lg:text-[100px] xl:text-[112px] leading-[0.93] sm:leading-[0.93] drop-shadow-sm">

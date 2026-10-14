@@ -139,7 +139,7 @@ export function EventsTimelineSection() {
       id="events"
     >
       {/* Header Area */}
-      <div className="absolute top-12 md:top-20 left-0 px-6 md:px-12 lg:px-20 z-20 w-full max-w-7xl mx-auto">
+      <div className="absolute top-12 md:top-20 inset-x-0 px-6 sm:px-10 lg:px-16 z-20 w-full max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
