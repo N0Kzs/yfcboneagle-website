@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { HeroCoverSection } from "@/components/hero-cover-section";
 import { EventsTimelineSection } from "@/components/events-timeline-section";
-import { TrainingTable } from "@/components/training-table";
 import { CertificationsSection } from "@/components/certifications-section";
 import { EventsGallerySection } from "@/components/events-gallery-section";
 import { CompanyProfileSection } from "@/components/company-profile-section";
@@ -21,13 +20,12 @@ export default function Page() {
       {/* 1, 2 & 3. Hero + Sticky Curved Card with Regional Hub (Panel 1) and Products Loop (Panel 2) */}
       <HeroCoverSection />
 
-      {/* 4. In the field: Recent Events & Conventions (Professional Journey Timeline + Stack) */}
+      {/* 4. In the field: Recent Events & Conventions + Scroll Card Cover with Training & Seminars Directory */}
       <EventsTimelineSection />
 
-      {/* 5. Training & Seminars Directory & Certifications */}
-      <section id="academy" className="px-6 py-24 sm:px-10 lg:px-16 md:py-32 bg-background border-b border-border/40">
-        <div className="mx-auto max-w-7xl space-y-20">
-          <TrainingTable />
+      {/* 5. Professional Certifications & Course Tracks */}
+      <section className="px-6 py-24 sm:px-10 lg:px-16 md:py-32 bg-background border-b border-border/40">
+        <div className="mx-auto max-w-7xl">
           <CertificationsSection />
         </div>
       </section>

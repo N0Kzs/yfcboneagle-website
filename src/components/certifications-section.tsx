@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { Book } from "@/components/ui/book";
-import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Sparkles, BookOpen, Layers } from "lucide-react";
 
 interface CertificationItem {
   id: string;
@@ -127,9 +127,30 @@ const CERTIFICATIONS: CertificationItem[] = [
   },
 ];
 
+const TRACK_SHORTCUTS = [
+  { name: "All Tracks", startIndex: 0 },
+  { name: "AEM Testing", startIndex: 0 },
+  { name: "Copper SCS", startIndex: 2 },
+  { name: "Fiber Optics", startIndex: 5 },
+  { name: "Fiber Splicing", startIndex: 8 },
+  { name: "GPON / FTTx", startIndex: 9 },
+];
+
 export function CertificationsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Scroll parallax reference
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const ambientGlowY = useTransform(scrollYProgress, [0, 1], [-70, 70]);
+  const auraScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.85, 1.2, 0.9]);
+  const auraOpacity = useTransform(scrollYProgress, [0, 0.4, 0.8, 1], [0.2, 0.65, 0.65, 0.2]);
 
   const nextSlide = () => {
     setDirection(1);
@@ -141,6 +162,16 @@ export function CertificationsSection() {
     setCurrentIndex((prev) => (prev - 1 + CERTIFICATIONS.length) % CERTIFICATIONS.length);
   };
 
+  // Gentle auto-slide (pauses on hover)
+  useEffect(() => {
+    if (isHovered) return;
+    const timer = setInterval(() => {
+      setDirection(1);
+      setCurrentIndex((prev) => (prev + 1) % CERTIFICATIONS.length);
+    }, 4800);
+    return () => clearInterval(timer);
+  }, [isHovered, currentIndex]);
+
   const getVisibleCerts = () => {
     const list = [];
     for (let i = 0; i < 3; i++) {
@@ -150,48 +181,145 @@ export function CertificationsSection() {
     return list;
   };
 
+  const activeCert = CERTIFICATIONS[currentIndex];
+
   return (
-    <div id="academy" className="w-full max-w-[1600px] mx-auto px-4 md:px-10 pt-10 pb-20 space-y-14 relative">
-      {/* Header exactly matching reference-blog Latest Stories */}
-      <div className="flex items-center justify-between border-b border-border/50 pb-8">
-        <div className="space-y-1.5">
-          <h3 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-3">
+    <motion.div
+      ref={sectionRef}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      id="certifications"
+      className="w-full max-w-[1600px] mx-auto px-4 md:px-10 pt-10 pb-20 space-y-10 relative overflow-hidden"
+    >
+      {/* Dynamic Ambient Color Aura (Shifts color with the active module) */}
+      <motion.div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] rounded-full blur-[140px] pointer-events-none -z-10 transition-all duration-700"
+        style={{
+          background: `radial-gradient(circle, ${activeCert.color}28 0%, transparent 70%)`,
+          y: ambientGlowY,
+          scale: auraScale,
+          opacity: auraOpacity,
+        }}
+      />
+
+      {/* Header with entrance animation & module count */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-border/50 pb-8 gap-6">
+        <motion.div
+          initial={{ opacity: 0, x: -24 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="space-y-2"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold uppercase tracking-wider text-primary mb-1">
+            <Sparkles className="size-3.5 animate-pulse text-primary" />
+            Curriculum Modules
+          </div>
+          <h3 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight flex items-center gap-3">
             Certifications & Courses
           </h3>
-          <p className="text-muted-foreground/70 font-semibold uppercase tracking-widest text-xs">
+          <p className="text-muted-foreground font-medium text-xs sm:text-sm">
             YFC Academy • Professional Training • Technical Certification Modules
           </p>
-        </div>
-        <a
-          href="#academy"
-          className="hidden md:flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground/60 hover:text-foreground transition-colors group"
+        </motion.div>
+
+        {/* Live Track Position Pill */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="flex items-center gap-3 shrink-0"
         >
-          Browse Full Curriculum
-          <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-        </a>
+          <div className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-muted/40 border border-border/80 shadow-xs backdrop-blur-md">
+            <Layers className="size-4 text-primary" />
+            <span className="text-xs font-bold uppercase tracking-wider text-foreground">
+              Module {String(currentIndex + 1).padStart(2, "0")} / {CERTIFICATIONS.length}
+            </span>
+            <span
+              className="size-2 rounded-full shadow-xs"
+              style={{ backgroundColor: activeCert.color }}
+            />
+          </div>
+        </motion.div>
       </div>
 
-      {/* 3D Book Slider Track matching reference-blog */}
-      <div className="relative group/slider flex items-center justify-center">
+      {/* Quick Category Track Filter Pills */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.25 }}
+        className="flex flex-wrap gap-2 items-center"
+      >
+        <span className="text-xs font-semibold text-muted-foreground mr-1">Filter Track:</span>
+        {TRACK_SHORTCUTS.map((track) => {
+          const isActive =
+            track.name === "All Tracks"
+              ? currentIndex === 0
+              : CERTIFICATIONS[currentIndex].badge.toLowerCase().includes(track.name.toLowerCase().split(" ")[0]);
+
+          return (
+            <motion.button
+              key={track.name}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setDirection(track.startIndex > currentIndex ? 1 : -1);
+                setCurrentIndex(track.startIndex);
+              }}
+              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
+                  : "bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/50"
+              }`}
+            >
+              {track.name}
+            </motion.button>
+          );
+        })}
+      </motion.div>
+
+      {/* Dynamic Progress Bar */}
+      <div className="w-full h-1 bg-border/40 rounded-full overflow-hidden">
+        <motion.div
+          className="h-full bg-gradient-to-r from-blue-500 via-yellow-500 to-emerald-500 rounded-full"
+          animate={{ width: `${((currentIndex + 1) / CERTIFICATIONS.length) * 100}%` }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        />
+      </div>
+
+      {/* 3D Book Slider Track */}
+      <div
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="relative group/slider flex items-center justify-center pt-2"
+      >
         {/* Navigation Buttons - Desktop */}
         <div className="absolute left-0 top-[35%] -translate-y-1/2 z-30 hidden lg:block">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
             onClick={prevSlide}
             aria-label="Previous Course"
-            className="p-4 rounded-full bg-background/80 backdrop-blur-md border border-border/60 text-foreground transition-all hover:bg-muted/80 hover:scale-110 active:scale-95 shadow-md cursor-pointer"
+            className="p-4 rounded-full bg-background/85 backdrop-blur-md border border-border/80 text-foreground transition-all hover:bg-muted/90 shadow-xl cursor-pointer hover:border-primary/50"
           >
             <ChevronLeft className="w-6 h-6" />
-          </button>
+          </motion.button>
         </div>
 
         <div className="absolute right-0 top-[35%] -translate-y-1/2 z-30 hidden lg:block">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
             onClick={nextSlide}
             aria-label="Next Course"
-            className="p-4 rounded-full bg-background/80 backdrop-blur-md border border-border/60 text-foreground transition-all hover:bg-muted/80 hover:scale-110 active:scale-95 shadow-md cursor-pointer"
+            className="p-4 rounded-full bg-background/85 backdrop-blur-md border border-border/80 text-foreground transition-all hover:bg-muted/90 shadow-xl cursor-pointer hover:border-primary/50"
           >
             <ChevronRight className="w-6 h-6" />
-          </button>
+          </motion.button>
         </div>
 
         {/* Mobile Navigation */}
@@ -199,14 +327,14 @@ export function CertificationsSection() {
           <button
             onClick={prevSlide}
             aria-label="Previous Course"
-            className="p-3 rounded-full bg-background/90 backdrop-blur-md border border-border/60 text-foreground shadow-md cursor-pointer"
+            className="p-3 rounded-full bg-background/90 backdrop-blur-md border border-border/80 text-foreground shadow-lg cursor-pointer"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={nextSlide}
             aria-label="Next Course"
-            className="p-3 rounded-full bg-background/90 backdrop-blur-md border border-border/60 text-foreground shadow-md cursor-pointer"
+            className="p-3 rounded-full bg-background/90 backdrop-blur-md border border-border/80 text-foreground shadow-lg cursor-pointer"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
@@ -214,24 +342,32 @@ export function CertificationsSection() {
 
         {/* Cards presentation */}
         <div className="overflow-visible w-full lg:max-w-[1400px] mx-auto px-4 md:px-12">
-          <div className="flex gap-8 md:gap-20 justify-center pt-8 pb-16 min-h-[580px] items-start relative">
+          <div className="flex gap-8 md:gap-20 justify-center pt-6 pb-12 min-h-[580px] items-start relative">
             <AnimatePresence mode="popLayout" initial={false}>
               {getVisibleCerts().map(({ item: cert, index }) => (
                 <motion.div
                   key={`${cert.id}-${currentIndex}`}
                   layout
-                  initial={{ opacity: 0, x: direction * 50, scale: 0.9, filter: "blur(10px)" }}
+                  initial={{ opacity: 0, x: direction * 60, scale: 0.88, filter: "blur(10px)" }}
                   animate={{ opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, x: direction * -50, scale: 0.9, filter: "blur(10px)" }}
+                  exit={{ opacity: 0, x: direction * -60, scale: 0.88, filter: "blur(10px)" }}
                   transition={{
                     type: "spring",
-                    stiffness: 260,
-                    damping: 26,
+                    stiffness: 220,
+                    damping: 24,
                   }}
                   className="group relative w-[200px] md:w-[260px] flex-shrink-0"
                 >
-                  <div className="block relative z-10 group/book cursor-pointer">
-                    {/* Hover Glow Effect from reference-blog */}
+                  <motion.div
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{
+                      duration: 4.5 + index * 0.4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="block relative z-10 group/book cursor-pointer"
+                  >
+                    {/* Hover Glow Effect */}
                     <div
                       className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] aspect-square -z-10 blur-[80px] opacity-0 group-hover/book:opacity-75 group-hover/book:scale-110 transition-all duration-700 rounded-full pointer-events-none"
                       style={{
@@ -259,10 +395,10 @@ export function CertificationsSection() {
                       width={{ sm: 160, md: 220, lg: 260 }}
                     />
 
-                    {/* Revealed Course Details on Hover (Exact reference-blog Pop-up Effect) */}
+                    {/* Revealed Course Details on Hover */}
                     <div className="mt-8 space-y-3 opacity-0 group-hover/book:opacity-100 transition-all duration-500 translate-y-4 group-hover/book:translate-y-0 pointer-events-none group-hover/book:pointer-events-auto">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.18em] px-2.5 py-0.5 rounded-md bg-muted border border-border text-foreground">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.18em] px-2.5 py-0.5 rounded-md bg-muted border border-border text-foreground shadow-xs">
                           {cert.badge}
                         </span>
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
@@ -273,7 +409,7 @@ export function CertificationsSection() {
                         {cert.excerpt}
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -281,16 +417,27 @@ export function CertificationsSection() {
         </div>
       </div>
 
-      {/* Mobile Footer Link */}
-      <div className="flex justify-center md:hidden pt-4">
-        <a
-          href="#academy"
-          className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground/70 hover:text-foreground transition-colors group"
-        >
-          Browse Full Curriculum
-          <ArrowUpRight className="w-4 h-4" />
-        </a>
+      {/* Interactive 12 Pagination Dots */}
+      <div className="flex items-center justify-center gap-2 pt-2">
+        {CERTIFICATIONS.map((cert, i) => (
+          <button
+            key={cert.id}
+            onClick={() => {
+              setDirection(i > currentIndex ? 1 : -1);
+              setCurrentIndex(i);
+            }}
+            aria-label={`Jump to ${cert.title}`}
+            className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+              currentIndex === i
+                ? "w-8 shadow-sm"
+                : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/60"
+            }`}
+            style={{
+              backgroundColor: currentIndex === i ? cert.color : undefined,
+            }}
+          />
+        ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
