@@ -75,15 +75,12 @@ export const Book = ({
   const _illustration = illustration ? illustration : DefaultIllustration;
 
   const isStripe = variant === "stripe";
-  // For stripe books, title text is inside the bottom container (bg-background-200),
-  // which is light in light mode and dark in dark mode. Must use adaptive foreground.
-  const resolvedTextColor = isStripe
-    ? "var(--foreground)"
-    : textColor && textColor !== "#FFFFFF"
-      ? textColor
-      : isLightColor(_color)
-        ? "var(--foreground)"
-        : "#FFFFFF";
+  const defaultTextColor = isStripe
+    ? "var(--ds-gray-1000)"
+    : isLightColor(_color)
+      ? "var(--ds-gray-1000)"
+      : "#ffffff";
+  const _textColor = textColor || defaultTextColor;
 
   return (
     <div className={clsx("inline-block w-fit select-none", className)} style={{ perspective: 900 }}>
@@ -92,9 +89,10 @@ export const Book = ({
         style={{ transformStyle: "preserve-3d", minWidth: _width, containerType: "inline-size" }}
       >
         <div
-          className="flex flex-col h-full rounded-l-md rounded-r overflow-hidden bg-background-200 shadow-book translate-x-0 relative after:absolute after:border after:border-gray-alpha-400 after:w-full after:h-full after:shadow-book-border after:rounded-l-md after:rounded-r"
+          className="flex flex-col h-full rounded-l-md rounded-r overflow-hidden bg-background-200 shadow-book translate-x-0 relative after:absolute after:border after:border-[var(--ds-gray-alpha-400)] after:w-full after:h-full after:shadow-book-border after:rounded-l-md after:rounded-r"
           style={{ width: _width }}
         >
+          {/* Top Section (Stripe variant) */}
           <div
             className={clsx(
               "w-full relative overflow-hidden",
@@ -102,13 +100,15 @@ export const Book = ({
             )}
             style={{ background: _color }}
           >
-            {variant === "stripe" && (
-              <div className="absolute h-full w-full flex items-center justify-center p-2.5">
+            {variant === "stripe" && illustration && (
+              <div className="absolute inset-0 flex items-center justify-center pl-[8.2%] p-3">
                 {_illustration}
               </div>
             )}
             <div className="absolute h-full w-[8.2%] mix-blend-overlay" style={{ background: "var(--ds-book-bind)" }} />
           </div>
+
+          {/* Bottom Section (Stripe) or Full Cover (Simple) */}
           <div
             className={clsx(
               "relative flex-1",
@@ -120,36 +120,40 @@ export const Book = ({
             <div
               className={clsx(
                 "flex flex-col w-full p-[6.1%] pl-[14.3%] h-full",
-                variant === "simple" ? "justify-between" : "justify-between"
+                variant === "simple" ? "gap-4" : "justify-between"
               )}
-              style={{ containerType: "inline-size" }}
+              style={{ containerType: "inline-size", gap: `calc((24px / 196) * ${_width})` }}
             >
               <span
                 className={clsx(
-                  "leading-[1.22em] tracking-tight text-balance font-bold",
-                  variant === "simple" ? "text-[12cqw]" : "text-[11cqw]"
+                  "leading-[1.25em] tracking-[-.02em] text-balance font-semibold",
+                  variant === "simple" ? "text-[12cqw]" : "text-[10.5cqw]"
                 )}
-                style={{ color: resolvedTextColor }}
+                style={{ color: _textColor }}
               >
                 {title}
               </span>
               {variant === "stripe" ? (
-                <svg className="scale-75 -ml-1 -mb-1 opacity-75" height="24" width="24" style={{ fill: resolvedTextColor }}>
+                <svg className="scale-75 -ml-1 -mb-1 opacity-90" height="24" width="24" style={{ fill: _textColor }}>
                   <path d="M21,21H3L12,3Z" />
                 </svg>
               ) : (
-                <div className="flex-1 flex items-center justify-center my-auto -ml-[6%] pb-4">
+                <div className="flex-1 flex items-center justify-center my-auto -ml-[6%] pb-3">
                   {_illustration}
                 </div>
               )}
             </div>
           </div>
+
+          {/* 3D Hardcover Cloth / Paper Grain Texture */}
           {textured && (
             <div
-              className="absolute top-0 left-0 inset-0 rotate-180 rounded-l-md rounded-r mix-blend-multiply dark:mix-blend-overlay pointer-events-none bg-cover bg-no-repeat opacity-25 bg-[url('https://assets.vercel.com/image/upload/v1720554484/front/design/book-texture.avif')]" />
+              className="absolute top-0 left-0 inset-0 rotate-180 rounded-l-md rounded-r mix-blend-hard-light pointer-events-none bg-cover bg-no-repeat opacity-50 brightness-110 bg-[url('/book-texture.avif')]"
+            />
           )}
         </div>
 
+        {/* 3D Pages Thickness (Right Edge) */}
         <div
           className="h-[calc(100%_-_2_*_3px)] w-[calc(29cqw_-_2px)] absolute top-[3px]"
           style={{
@@ -157,9 +161,11 @@ export const Book = ({
             transform: `translateX(calc(${_width} * 1px - 29cqw / 2 - 3px)) rotateY(90deg) translateX(calc(29cqw / 2))`
           }}
         />
+
+        {/* Back Cover */}
         <div
-          className="bg-gray-200 dark:bg-zinc-800 absolute left-0 top-0 rounded-l-md rounded-r h-full"
-          style={{ width: _width, transform: "translateZ(calc(-1 * 29cqw))" }}
+          className="bg-gray-200 absolute left-0 top-0 rounded-l-md rounded-r h-full"
+          style={{ width: _width, transform: "translateZ(calc(-1 * 29cqw))", background: "var(--ds-gray-200)" }}
         />
       </div>
     </div>

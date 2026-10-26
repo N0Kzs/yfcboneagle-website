@@ -23,7 +23,7 @@ const CERTIFICATIONS: CertificationItem[] = [
     badge: "AEM Testing",
     level: "Yellow Track",
     excerpt: "Master high-frequency Cat 6A/7/8 channel certification, return loss margin analysis, and Tier-1 automated testing audits.",
-    color: "#eab308",
+    color: "#f6b14d",
     logo: "/Certifications & Courses/AEM Test Professional Copper - Yellow.png",
   },
   {
@@ -50,7 +50,7 @@ const CERTIFICATIONS: CertificationItem[] = [
     badge: "Copper SCS",
     level: "Yellow Track",
     excerpt: "Advanced 10G/40GBASE-T channel validation, alien crosstalk mitigation, high-power PoE++ thermal rise, and shielding.",
-    color: "#eab308",
+    color: "#f6b14d",
     logo: "/Certifications & Courses/Copper SCS Expert - Yellow.png",
   },
   {
@@ -59,7 +59,7 @@ const CERTIFICATIONS: CertificationItem[] = [
     badge: "Copper SCS",
     level: "Red Track",
     excerpt: "Hands-on field installation, modular jack terminations, patch field dressing, cable pulling tension, and wiremap diagnostics.",
-    color: "#dc2626",
+    color: "#9D2127",
     logo: "/Certifications & Courses/Copper SCS Installer - Red.png",
   },
   {
@@ -77,7 +77,7 @@ const CERTIFICATIONS: CertificationItem[] = [
     badge: "Fiber Optics",
     level: "Yellow Track",
     excerpt: "High-density MPO/MTP multi-fiber trunking, polarity schemes, optical dispersion compensation, and datacenter fabrics.",
-    color: "#eab308",
+    color: "#f6b14d",
     logo: "/Certifications & Courses/FOC SCS Expert - Yellow.png",
   },
   {
@@ -86,7 +86,7 @@ const CERTIFICATIONS: CertificationItem[] = [
     badge: "Fiber Optics",
     level: "Red Track",
     excerpt: "Field optical cable handling, breakout assembly, mechanical connectors, splice tray dressing, and VFL inspection.",
-    color: "#dc2626",
+    color: "#9D2127",
     logo: "/Certifications & Courses/FOC SCS Installer - Red.png",
   },
   {
@@ -95,7 +95,7 @@ const CERTIFICATIONS: CertificationItem[] = [
     badge: "Fiber Splicing",
     level: "Red Track",
     excerpt: "Precision core-alignment arc fusion splicing, cleave angle validation, heat shrink protection, and micro-loss joint verification.",
-    color: "#dc2626",
+    color: "#9D2127",
     logo: "/Certifications & Courses/Fusion Splicer Professional - Red.png",
   },
   {
@@ -113,7 +113,7 @@ const CERTIFICATIONS: CertificationItem[] = [
     badge: "GPON / FTTx",
     level: "Yellow Track",
     excerpt: "Wavelength Division Multiplexing (WDM), XGS-PON 10G transmission, optical link budgets, and telco-grade FTTx audits.",
-    color: "#eab308",
+    color: "#f6b14d",
     logo: "/Certifications & Courses/GPON FTTX SCS Expert - Yellow.png",
   },
   {
@@ -122,7 +122,7 @@ const CERTIFICATIONS: CertificationItem[] = [
     badge: "GPON / FTTx",
     level: "Red Track",
     excerpt: "FTTx drop cable routing, optical drop terminal (ODT) field splicing, PLC splitter mounting, and subscriber ONT turn-up.",
-    color: "#dc2626",
+    color: "#9D2127",
     logo: "/Certifications & Courses/GPON FTTX SCS Installer - Red.png",
   },
 ];
@@ -381,31 +381,31 @@ export function CertificationsSection() {
                       color={cert.color}
                       variant={index % 2 === 0 ? "stripe" : "simple"}
                       illustration={
-                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 flex items-center justify-center">
+                        <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center">
                           <Image
                             src={cert.logo}
                             alt={cert.title}
-                            width={112}
-                            height={112}
-                            className="w-full h-full object-contain drop-shadow-md"
+                            width={96}
+                            height={96}
+                            className="w-full h-full object-contain drop-shadow-md rounded-2xl"
                           />
                         </div>
                       }
                       textured
-                      width={{ sm: 160, md: 220, lg: 260 }}
+                      width={{ sm: 180, md: 220, lg: 250 }}
                     />
 
-                    {/* Revealed Course Details on Hover */}
-                    <div className="mt-8 space-y-3 opacity-0 group-hover/book:opacity-100 transition-all duration-500 translate-y-4 group-hover/book:translate-y-0 pointer-events-none group-hover/book:pointer-events-auto">
+                    {/* Course Details (Retained below each book) */}
+                    <div className="mt-6 space-y-2 transition-all duration-300">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.18em] px-2.5 py-0.5 rounded-md bg-muted border border-border text-foreground shadow-xs">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.18em] px-2.5 py-0.5 rounded-md bg-muted/80 border border-border/80 text-foreground shadow-2xs">
                           {cert.badge}
                         </span>
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                           {cert.level}
                         </span>
                       </div>
-                      <p className="text-sm text-foreground/80 dark:text-foreground/75 font-medium leading-relaxed line-clamp-2">
+                      <p className="text-xs sm:text-sm text-muted-foreground group-hover/book:text-foreground font-medium leading-relaxed line-clamp-2 transition-colors">
                         {cert.excerpt}
                       </p>
                     </div>

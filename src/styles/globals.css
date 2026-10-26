@@ -1,6 +1,6 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -22,6 +22,7 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -80,6 +81,17 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* 3D Book Component Tokens */
+  --ds-amber-600: #f6b14d;
+  --ds-gray-200: #ebebeb;
+  --ds-gray-1000: #171717;
+  --ds-gray-alpha-400: rgba(0, 0, 0, 0.08);
+  --ds-background-200: #fafafa;
+  --ds-book-bind: linear-gradient(90deg, rgba(0,0,0,0.05), transparent 50%, rgba(0,0,0,0.05));
+  --ds-shadow-book: 0 1px 1px 0 rgba(0, 0, 0, .02), 0 4px 8px -4px rgba(0, 0, 0, .1), 0 16px 24px -8px rgba(0, 0, 0, .03);
+  --ds-shadow-book-border: inset 0 1px 2px 0 rgba(255, 255, 255, .3);
+  --ds-book-gradient: linear-gradient(rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
 }
 
 .dark {
@@ -116,6 +128,13 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* 3D Book Component Tokens */
+  --ds-amber-600: #e69d31;
+  --ds-gray-200: #1f1f1f;
+  --ds-gray-1000: #ededed;
+  --ds-gray-alpha-400: rgba(255, 255, 255, 0.14);
+  --ds-background-200: #0d1527;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -244,31 +263,31 @@
   }
 }
 
-/* 3D Book Component Tokens & Utilities (matching reference-blog) */
-:root {
-  --ds-amber-600: #f6b14d;
-  --ds-gray-200: #ebebeb;
-  --ds-gray-1000: #171717;
-  --ds-gray-alpha-400: rgba(0, 0, 0, 0.08);
-  --ds-background-200: #fafafa;
-  --ds-book-bind: linear-gradient(90deg, rgba(0,0,0,0.05), transparent 50%, rgba(0,0,0,0.05));
-  --ds-shadow-book: 0 1px 1px 0 rgba(0, 0, 0, .02), 0 4px 8px -4px rgba(0, 0, 0, .1), 0 16px 24px -8px rgba(0, 0, 0, .03);
-  --ds-shadow-book-border: inset 0 1px 2px 0 rgba(255, 255, 255, .3);
-  --ds-book-gradient: linear-gradient(rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
-}
-
-.dark {
-  --ds-amber-600: #e69d31;
-  --ds-gray-200: #1f1f1f;
-  --ds-gray-1000: #ededed;
-  --ds-gray-alpha-400: rgba(255, 255, 255, 0.14);
-  --ds-background-200: #0d1527;
-}
-
+/* 3D Book Component Utility Classes */
 .bg-background-200 { background: var(--ds-background-200); }
 .shadow-book { box-shadow: var(--ds-shadow-book); }
 .shadow-book-border { box-shadow: var(--ds-shadow-book-border); }
 .bg-book-gradient { background-image: var(--ds-book-gradient); }
 .book-rotate { transition: transform 0.5s ease-out; transform: rotateY(0deg); transform-style: preserve-3d; }
 .book-rotate:hover { transform: rotateY(-25deg); }
+
+
+/* Directory Filters smooth scrollbar */
+.filter-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.filter-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.filter-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.filter-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.filter-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
 
